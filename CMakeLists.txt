@@ -3,5 +3,5 @@ project(VSClient)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES main.cpp src/main.c)
 add_executable(VSClient ${SOURCE_FILES})
