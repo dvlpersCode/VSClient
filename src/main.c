@@ -3,8 +3,8 @@
 //
 
 #include <stdio.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -12,6 +12,11 @@ void initializeCharArray(char *);
 int getUserInput();
 int readNumberFromTerminal();
 void readFileNames(char *);
+void appendToFileString(char *, char *);
+
+const char READ_BYTE_NUMBER[] = "Wie viele Bytes wollen Sie von dem Server erhalten (n <= 10): \n n = ";
+const char READ_NUMBER_OF_FILES[] = "Wie viele Dateinamen wollen Sie an den Server senden? \n Anzahl: ";
+const char READ_FILE_NAME[] = "Lese Dateiname: ";
 
 int main() {
     getUserInput();
@@ -19,31 +24,31 @@ int main() {
 }
 
 int getUserInput() {
-    int numberOfBytes = 0;
+    long numberOfBytes = 0;
     int numberOfFiles = 0;
     int exit = 0;
     char byteNumberAsChar[2];
     char fileNamesString[250];
+    char *pointer;
 
     memset(fileNamesString, '\0', sizeof(fileNamesString));
 
     while (exit == 0) {
         //initialize the char array
         initializeCharArray(fileNamesString);
-        printf("Wie viele Bytes wollen Sie von dem Server erhalten (n <= 10): \n n = ");
+        printf(READ_BYTE_NUMBER);
 
         //read a number from the terminal
-        numberOfBytes = readNumberFromTerminal();
+        scanf("%s", byteNumberAsChar);
 
         //conver the number to a char array
-        snprintf(byteNumberAsChar, 4, "%d", numberOfBytes);
+        numberOfBytes = strtol(byteNumberAsChar, &pointer, 10);
 
         //append the char array to the fileNamesString
-        strcat(fileNamesString, "-");
-        strcat(fileNamesString, byteNumberAsChar);
+        appendToFileString(fileNamesString, byteNumberAsChar);
 
         //read how many files the user wants to send to the server
-        printf("Wie viele Dateinamen wollen Sie an den Server senden? \n Anzahl: ");
+        printf(READ_NUMBER_OF_FILES);
         numberOfFiles = readNumberFromTerminal();
 
         while (numberOfFiles > 0) {
@@ -55,7 +60,6 @@ int getUserInput() {
         printf("N: %d, Files: %d", numberOfBytes, numberOfFiles);
         exit = 1;
     }
-
 }
 
 void initializeCharArray(char *array) {
@@ -71,11 +75,15 @@ int readNumberFromTerminal() {
 
 void readFileNames(char *fileString) {
     char fileName[47];
-    printf("Lese Dateiname: ");
+    printf(READ_FILE_NAME);
     scanf("%s", fileName);
-    strcat(fileString, " -");
-    strcat(fileString, fileName);
+    appendToFileString(fileString, fileName);
     printf("\n%s\n", fileString);
+}
+
+void appendToFileString(char *fileString, char *stringToAppend) {
+    strcat(fileString, " -");
+    strcat(fileString, stringToAppend);
 }
 
 
