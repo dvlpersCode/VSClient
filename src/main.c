@@ -18,9 +18,13 @@ char *readNumberOfBytes();
 void readFiles(char *);
 void serverConnection(const char *);
 
+
+const int port = 5391;
 const char READ_BYTE_NUMBER[] = "Wie viele Bytes wollen Sie von dem Server erhalten (n <= 10): \n n = ";
 const char READ_NUMBER_OF_FILES[] = "Wie viele Dateinamen wollen Sie an den Server senden? \n Anzahl: ";
 const char READ_FILE_NAME[] = "Lese Dateiname: ";
+const char CREATE_SOCKET_ERROR[] = "Fehler beim erstellen des Socket";
+const char CONNECTION_ERROR[] = "Fehler beim Verbinden zum server";
 
 /**
  * main function of the program
@@ -130,18 +134,27 @@ void serverConnection(const char *stringFilesNames) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sock < 0) {
-        printf("Fehler beim erstellen des Socket");
+        printf(CREATE_SOCKET_ERROR);
     }
 
-    struct sockaddr_in serveraddr;  /* Struktur fuer die Clientadresse */
+    struct sockaddr_in serveraddr;  /* Struktur fuer die Serveradresse */
 
     serveraddr.sin_family = AF_INET;             /* Familie auf Internet setzen */
-    serveraddr.sin_port = htons(5193);  /* host-byte-order -> network byte-order */
+    serveraddr.sin_port = htons(port);  /* host-byte-order -> network byte-order */
     serveraddr.sin_addr.s_addr = INADDR_ANY;     /* Lokale IP-Adressen setzen */
 
+    //Baue Verbindung zum Server auf
     int status = connect(sock, (struct sockaddr *) &serveraddr, sizeof(serveraddr));
 
     if (status == -1) {
-        printf("Fehler beim Verbinden zum server");
+        printf(CONNECTION_ERROR);
     }
+
+    //sende Daten an den Server
+    send(sock, stringFilesNames, sizeof(*stringFilesNames), 0);
+
+    /*Robin und Nic, hier muss der Client die Daten von dem Server erhalten.
+     * Ihr müsst am besten noch Florian fragen wie der Rückgabe String aussieht um ihn
+     * verarbeiten zu können.
+     */
 }
