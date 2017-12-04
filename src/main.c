@@ -9,7 +9,7 @@
 #include <winsock.h>
 
 void initializeCharArray(char *);
-int getUserInput();
+void getUserInput();
 int readNumberFromTerminal();
 void readFileNames(char *);
 void appendToFileString(char *, char *);
@@ -36,9 +36,8 @@ int main() {
 
 /**
  * execute all methods which are necessaray to send and receive data to/from a server
- * @return
  */
-int getUserInput() {
+void getUserInput() {
     int exit = 0;
     int numberOfFiles = 0;
     char byteNumberAsChar[3];
@@ -160,6 +159,7 @@ void serverConnection(const char *stringFilesNames, int numberOfFiles) {
 
     if (sock < 0) {
         printf(CREATE_SOCKET_ERROR);
+        exit(1);
     }
 
     struct sockaddr_in serveraddr;  /* Struktur fuer die Serveradresse */
@@ -173,14 +173,19 @@ void serverConnection(const char *stringFilesNames, int numberOfFiles) {
 
     if (status == -1) {
         printf(CONNECTION_ERROR);
+        exit(2);
     }
+
     //send data to server
     send(sock, stringFilesNames, sizeof(*stringFilesNames), 0);
 
     //receive data from server
     for (int i = 0; i < numberOfFiles; i++) {
         initializeCharArray(receivedData);
-        recv(sock, receivedData, 100, MSG_PEEK);
-        printf("Daten erhalten: %s", receivedData);
+        if (recv(sock, receivedData, 100, MSG_PEEK) < 0) {
+            printf("Fehler beim empfangen der Daten");
+        } else {
+            printf("Daten erhalten: %s", receivedData);
+        }
     }
 }
