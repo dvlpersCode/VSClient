@@ -1,10 +1,9 @@
-//
-// Created by Cedric on 30.11.2017.
-//
-#define _WIN32_WINNT 0x0501
-
+/**
+ * Cedric Schreiner, Florian Hennrich, Nicolas Loosen, Mesut Özcan, Robin Tauer, Alexander Lukacs
+ * Class to implement a client programm to send a number of Filenames and receive the first n bytes
+ * of each file
+ */
 #include <stdio.h>
-//#include <netinet/in.h>
 #include <string.h>
 #include <stdlib.h>
 #include <winsock.h>
@@ -35,13 +34,15 @@ int main() {
     return 0;
 }
 
+/**
+ * execute all methods which are necessaray to send and receive data to/from a server
+ * @return
+ */
 int getUserInput() {
     int exit = 0;
     int numberOfFiles = 0;
     char byteNumberAsChar[3];
     char fileNamesString[250];
-
-    memset(fileNamesString, '\0', sizeof(fileNamesString));
 
     while (exit == 0) {
         //initialize the char array
@@ -86,13 +87,18 @@ char *readNumberOfBytes() {
         scanf("%s", byteNumberAsChar);
         byteNumberAsChar[2] = '\0';
 
-        //conver the number to a char array
+        //convert the number to a char array
         numberOfBytes = strtol(byteNumberAsChar, &pointer, 10);
     } while (numberOfBytes == 0);
     returnNumber = byteNumberAsChar;
     return returnNumber;
 }
 
+/**
+ * read numberOfFiles and and the file Names
+ * @param fileNamesString
+ * @return
+ */
 int readFiles(char *fileNamesString) {
     int numberOfFiles = 0;
 
@@ -103,14 +109,13 @@ int readFiles(char *fileNamesString) {
     for (int i = 0; i < numberOfFiles; i++) {
         readFileNames(fileNamesString);
     }
-//    while (numberOfFiles > 0) {
-//        //read a file name and append it to fileNamesString
-//        readFileNames(fileNamesString);
-//        numberOfFiles--;
-//    }
     return numberOfFiles;
 }
 
+/**
+ * initialize an number from the terminal
+ * @return
+ */
 int readNumberFromTerminal() {
     int number = 0;
     char numberAsChar[2];
@@ -121,6 +126,10 @@ int readNumberFromTerminal() {
     return number;
 }
 
+/**
+ * reads the User Input from the terminal
+ * @param fileString
+ */
 void readFileNames(char *fileString) {
     char fileName[47];
     printf(READ_FILE_NAME);
@@ -129,11 +138,21 @@ void readFileNames(char *fileString) {
     printf("\n%s\n", fileString);
 }
 
+/**
+ * create full string
+ * @param fileString
+ * @param stringToAppend
+ */
 void appendToFileString(char *fileString, char *stringToAppend) {
     strcat(fileString, " -");
     strcat(fileString, stringToAppend);
 }
 
+/**
+ * connect to server, send dataString, wait and receive Data from Server
+ * @param stringFilesNames
+ * @param numberOfFiles
+ */
 void serverConnection(const char *stringFilesNames, int numberOfFiles) {
     SOCKET sock;
     char receivedData[100];
@@ -155,14 +174,8 @@ void serverConnection(const char *stringFilesNames, int numberOfFiles) {
     if (status == -1) {
         printf(CONNECTION_ERROR);
     }
-
     //send data to server
     send(sock, stringFilesNames, sizeof(*stringFilesNames), 0);
-
-    /*Robin und Nic, hier muss der Client die Daten von dem Server erhalten.
-     * Ihr müsst am besten noch Florian fragen wie der Rückgabe String aussieht um ihn
-     * verarbeiten zu können.
-     */
 
     //receive data from server
     for (int i = 0; i < numberOfFiles; i++) {
