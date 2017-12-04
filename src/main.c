@@ -15,11 +15,11 @@ int readNumberFromTerminal();
 void readFileNames(char *);
 void appendToFileString(char *, char *);
 char *readNumberOfBytes();
-void readFiles(char *);
-void serverConnection(const char *);
+int readFiles(char *);
+void serverConnection(const char *, int);
 
 
-const int port = 5391;
+const int port = 5193;
 const char READ_BYTE_NUMBER[] = "Wie viele Bytes wollen Sie von dem Server erhalten (n <= 10): \n n = ";
 const char READ_NUMBER_OF_FILES[] = "Wie viele Dateinamen wollen Sie an den Server senden? \n Anzahl: ";
 const char READ_FILE_NAME[] = "Lese Dateiname: ";
@@ -37,6 +37,7 @@ int main() {
 
 int getUserInput() {
     int exit = 0;
+    int numberOfFiles = 0;
     char byteNumberAsChar[3];
     char fileNamesString[250];
 
@@ -52,9 +53,9 @@ int getUserInput() {
         //append the char array to the fileNamesString
         appendToFileString(fileNamesString, byteNumberAsChar);
 
-        readFiles(fileNamesString);
+        numberOfFiles = readFiles(fileNamesString);
 
-        serverConnection(fileNamesString);
+        serverConnection(fileNamesString, numberOfFiles);
 
         exit = 1;
     }
@@ -92,18 +93,22 @@ char *readNumberOfBytes() {
     return returnNumber;
 }
 
-void readFiles(char *fileNamesString) {
+int readFiles(char *fileNamesString) {
     int numberOfFiles = 0;
 
     //read how many files the user wants to send to the server
     printf(READ_NUMBER_OF_FILES);
     numberOfFiles = readNumberFromTerminal();
 
-    while (numberOfFiles > 0) {
-        //read a file name and append it to fileNamesString
+    for (int i = 0; i < numberOfFiles; i++) {
         readFileNames(fileNamesString);
-        numberOfFiles--;
     }
+//    while (numberOfFiles > 0) {
+//        //read a file name and append it to fileNamesString
+//        readFileNames(fileNamesString);
+//        numberOfFiles--;
+//    }
+    return numberOfFiles;
 }
 
 int readNumberFromTerminal() {
@@ -129,8 +134,9 @@ void appendToFileString(char *fileString, char *stringToAppend) {
     strcat(fileString, stringToAppend);
 }
 
-void serverConnection(const char *stringFilesNames) {
+void serverConnection(const char *stringFilesNames, int numberOfFiles) {
     SOCKET sock;
+    char receivedData[100];
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sock < 0) {
@@ -143,18 +149,25 @@ void serverConnection(const char *stringFilesNames) {
     serveraddr.sin_port = htons(port);  /* host-byte-order -> network byte-order */
     serveraddr.sin_addr.s_addr = INADDR_ANY;     /* Lokale IP-Adressen setzen */
 
-    //Baue Verbindung zum Server auf
+    //try to connect to the server
     int status = connect(sock, (struct sockaddr *) &serveraddr, sizeof(serveraddr));
 
     if (status == -1) {
         printf(CONNECTION_ERROR);
     }
 
-    //sende Daten an den Server
+    //send data to server
     send(sock, stringFilesNames, sizeof(*stringFilesNames), 0);
 
     /*Robin und Nic, hier muss der Client die Daten von dem Server erhalten.
      * Ihr müsst am besten noch Florian fragen wie der Rückgabe String aussieht um ihn
      * verarbeiten zu können.
      */
+
+    //receive data from server
+    for (int i = 0; i < numberOfFiles; i++) {
+        initializeCharArray(receivedData);
+        recv(sock, receivedData, 100, MSG_PEEK);
+        printf("Daten erhalten: %s", receivedData);
+    }
 }
