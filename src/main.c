@@ -227,9 +227,9 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     }
     printf("Socket created. \n");
 
-    server.sin_addr.s_addr = inet_addr("74.125.235.20");
-    server.sin_family = AF_INET;
-    server.sin_port = htons( 80 );
+    server.sin_family = AF_INET;             /* Familie auf Internet setzen */
+    server.sin_port = htons(port);  /* host-byte-order -> network byte-order */
+    server.sin_addr.s_addr = INADDR_ANY;     /* Lokale IP-Adressen setzen */
 
     //connect to remote server
     if(connect(s,(struct sockaddr *)&server , sizeof(server)) < 0){
