@@ -3,12 +3,14 @@
  * Class to implement a client programm to send a number of Filenames and receive the first n bytes
  * of each file
  */
+#include <winsock2.h>
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
 #include <stdlib.h>
 #include <winsock.h>
 #include <ws2tcpip.h>
+#pragma comment(lib,"ws2_32.lib") //Winsock library
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -30,6 +32,8 @@ void appendToFileString(char *, char *);
 char *readNumberOfBytes();
 int readFiles(char *);
 void serverConnection(const char *, int);
+
+int connectToServer(const char *, int);
 
 
 const int port = 5193;
@@ -69,7 +73,8 @@ void getUserInput() {
 
         numberOfFiles = readFiles(fileNamesString);
 
-        serverConnection(fileNamesString, numberOfFiles);
+        //serverConnection(fileNamesString, numberOfFiles);
+        connectToServer(fileNamesString, numberOfFiles);
 
         exit = 1;
     }
@@ -202,4 +207,36 @@ void serverConnection(const char *stringFilesNames, int numberOfFiles) {
             printf("Daten erhalten: %s", receivedData);
         }
     }
+}
+
+int connectToServer(const char* stringFileNames, int numberOfFiles){
+    WSADATA wsa;
+    SOCKET s;
+    struct sockaddr_in server;
+
+    printf("\n Initialising Winsock...");
+    if(WSAStartup(MAKEWORD(2,2), &wsa) != 0){
+        printf("Failed. Error Code %d", WSAGetLastError());
+        return 1;
+    }
+    printf("\n Initialised \n");
+
+    //create Socket
+    if((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET){
+        printf("Could not create Socket : %d", WSAGetLastError());
+    }
+    printf("Socket created. \n");
+
+    server.sin_addr.s_addr = inet_addr("74.125.235.20");
+    server.sin_family = AF_INET;
+    server.sin_port = htons( 80 );
+
+    //connect to remote server
+    if(connect(s,(struct sockaddr *)&server , sizeof(server)) < 0){
+        puts("connect error");
+        return 1;
+    }
+    puts("connected");
+
+    return 0;
 }
