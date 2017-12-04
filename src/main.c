@@ -240,25 +240,9 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     }
     puts("connected");
 
-    //send Data
-    if(send(s, stringFileNames, sizeof(*stringFileNames), 0) < 0){
-        puts("Send Failed");
-        return 1;
-    }
-    puts("Data Send\n");
-
-    //receiving a reply from the server
-    for (int i = 0; i < numberOfFiles; i++) {
-        initializeCharArray(serverReply);
-        if ((recv_size =recv(s, serverReply, 256, MSG_PEEK)) == SOCKET_ERROR) {
-            puts("Error while receiving a reply from the server.");
-        } else {
-            serverReply[recv_size] = '\0';
-            printf("Data received : %s", serverReply);
-        }
-    }
-    closesocket(s);
-    WSACleanup();
+    /*
+     * send Data & receive Data @Robin bitte einfügen
+     */
 
     return 0;
 }
