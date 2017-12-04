@@ -3,6 +3,7 @@
  * Class to implement a client programm to send a number of Filenames and receive the first n bytes
  * of each file
  */
+//--------------------includes--------------------//
 #include <winsock2.h>
 #include <stdio.h>
 #include <windows.h>
@@ -10,20 +11,18 @@
 #include <stdlib.h>
 #include <winsock.h>
 #include <ws2tcpip.h>
-#pragma comment(lib,"ws2_32.lib") //Winsock library
+//--------------------endincludes--------------------//
 
-#pragma comment (lib, "Ws2_32.lib")
+//--------------------pragma--------------------//
+#pragma comment(lib,"ws2_32.lib") //Winsock library
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
+//--------------------endPragma--------------------//
 
+//--------------------prototypeFunctions--------------------//
 void WSAAPI freeaddrinfo( struct addrinfo* );
-
-int WSAAPI getaddrinfo( const char*, const char*, const struct addrinfo*,
-                        struct addrinfo** );
-
-int WSAAPI getnameinfo( const struct sockaddr*, socklen_t, char*, DWORD,
-                        char*, DWORD, int );
-
+int WSAAPI getaddrinfo( const char*, const char*, const struct addrinfo*, struct addrinfo** );
+int WSAAPI getnameinfo( const struct sockaddr*, socklen_t, char*, DWORD,char*, DWORD, int );
 void initializeCharArray(char *);
 void getUserInput();
 int readNumberFromTerminal();
@@ -32,16 +31,17 @@ void appendToFileString(char *, char *);
 char *readNumberOfBytes();
 int readFiles(char *);
 void serverConnection(const char *, int);
-
 int connectToServer(const char *, int);
+//--------------------endPrototypeFunctions--------------------//
 
-
+//--------------------constant--------------------//
 const int port = 5193;
 const char READ_BYTE_NUMBER[] = "Wie viele Bytes wollen Sie von dem Server erhalten (n <= 10): \n n = ";
 const char READ_NUMBER_OF_FILES[] = "Wie viele Dateinamen wollen Sie an den Server senden? \n Anzahl: ";
 const char READ_FILE_NAME[] = "Lese Dateiname: ";
 const char CREATE_SOCKET_ERROR[] = "Fehler beim erstellen des Socket";
 const char CONNECTION_ERROR[] = "Fehler beim Verbinden zum server";
+//--------------------endConstants--------------------//
 
 /**
  * main function of the program
