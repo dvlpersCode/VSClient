@@ -238,5 +238,12 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     }
     puts("connected");
 
+    //send Data
+    if(send(s, stringFileNames, sizeof(*stringFileNames), 0) < 0){
+        puts("Send Failed");
+        return 1;
+    }
+    puts("Data Send\n");
+
     return 0;
 }
