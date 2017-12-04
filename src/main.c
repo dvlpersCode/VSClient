@@ -213,6 +213,8 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     WSADATA wsa;
     SOCKET s;
     struct sockaddr_in server;
+    char serverReply[256];
+    int recv_size;
 
     printf("\n Initialising Winsock...");
     if(WSAStartup(MAKEWORD(2,2), &wsa) != 0){
@@ -244,6 +246,19 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
         return 1;
     }
     puts("Data Send\n");
+
+    //receiving a reply from the server
+    for (int i = 0; i < numberOfFiles; i++) {
+        initializeCharArray(serverReply);
+        if ((recv_size =recv(s, serverReply, 256, MSG_PEEK)) == SOCKET_ERROR) {
+            puts("Error while receiving a reply from the server.");
+        } else {
+            serverReply[recv_size] = '\0';
+            printf("Data received : %s", serverReply);
+        }
+    }
+    closesocket(s);
+    WSACleanup();
 
     return 0;
 }
