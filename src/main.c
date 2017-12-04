@@ -4,9 +4,23 @@
  * of each file
  */
 #include <stdio.h>
+#include <windows.h>
 #include <string.h>
 #include <stdlib.h>
 #include <winsock.h>
+#include <ws2tcpip.h>
+
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+
+void WSAAPI freeaddrinfo( struct addrinfo* );
+
+int WSAAPI getaddrinfo( const char*, const char*, const struct addrinfo*,
+                        struct addrinfo** );
+
+int WSAAPI getnameinfo( const struct sockaddr*, socklen_t, char*, DWORD,
+                        char*, DWORD, int );
 
 void initializeCharArray(char *);
 void getUserInput();
