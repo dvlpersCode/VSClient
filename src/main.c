@@ -240,9 +240,22 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     }
     puts("connected");
 
-    /*
-     * send Data & receive Data @Robin bitte einfügen
-     */
+    //send data
+    if(send(s, stringFileNames, strlen(stringFileNames), 0)){
+        puts("Send failed");
+        return 1;
+    }
+    puts("Data send\n");
+
+    //Receive reply from the server
+    if((recv_size = recv(s, serverReply, 256, 0)) == SOCKET_ERROR){
+        puts("recv failed");
+    }
+    puts("Reply received\n");
+
+    //Add a NULL terminating character to make it a proper string before printing
+    serverReply[recv_size] = '\0';
+    puts(serverReply);
 
     return 0;
 }
