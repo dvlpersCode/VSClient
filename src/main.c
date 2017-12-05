@@ -35,7 +35,7 @@ int connectToServer(const char *, int);
 //--------------------endPrototypeFunctions--------------------//
 
 //--------------------constant--------------------//
-const int port = 5193;
+const int port = 32000;
 const char READ_BYTE_NUMBER[] = "Wie viele Bytes wollen Sie von dem Server erhalten (n <= 10): \n n = ";
 const char READ_NUMBER_OF_FILES[] = "Wie viele Dateinamen wollen Sie an den Server senden? \n Anzahl: ";
 const char READ_FILE_NAME[] = "Lese Dateiname: ";
@@ -231,7 +231,7 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
 
     server.sin_family = AF_INET;             /* Familie auf Internet setzen */
     server.sin_port = htons(port);  /* host-byte-order -> network byte-order */
-    server.sin_addr.s_addr = INADDR_ANY;     /* Lokale IP-Adressen setzen */
+    server.sin_addr.s_addr = inet_addr("10.9.44.129");     /* Lokale IP-Adressen setzen */
 
     //connect to remote server
     if(connect(s,(struct sockaddr *)&server , sizeof(server)) < 0){
@@ -241,21 +241,25 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     puts("connected");
 
     //send data
-    if(send(s, stringFileNames, strlen(stringFileNames), 0)){
+    if(send(s, stringFileNames, 250, 0) < 0){
         puts("Send failed");
         return 1;
     }
     puts("Data send\n");
 
     //Receive reply from the server
-    if((recv_size = recv(s, serverReply, 256, 0)) == SOCKET_ERROR){
-        puts("recv failed");
-    }
-    puts("Reply received\n");
+    for (int i = 0; i < numberOfFiles; i++) {
+        if ((recv_size = recv(s, serverReply, 256, 0)) == SOCKET_ERROR) {
+            puts("recv failed");
 
-    //Add a NULL terminating character to make it a proper string before printing
-    serverReply[recv_size] = '\0';
-    puts(serverReply);
+            //Add a NULL terminating character to make it a proper string before printing
+            exit(1);
+        } else {
+            serverReply[recv_size] = '\0';
+            puts(serverReply);
+        }
+    }
+//    puts("Reply received\n");
 
     return 0;
 }
