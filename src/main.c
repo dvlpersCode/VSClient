@@ -79,24 +79,24 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     puts(CONNECTED);
 
     //send data
-    if(send(s, stringFileNames, 250, 0) < 0){
+    if(send(s, stringFileNames, sizeof(*stringFileNames), 0) < 0){
         puts("Send failed");
         return 1;
     }
     puts("Data send\n");
 
-    //Receive reply from the server
+    //receiving a reply from the server
     for (int i = 0; i < numberOfFiles; i++) {
-        if ((recv_size = recv(s, serverReply, 256, 0)) == SOCKET_ERROR) {
-            puts("recv failed");
-
-            //Add a NULL terminating character to make it a proper string before printing
-            exit(1);
+        initializeCharArray(serverReply);
+        if ((recv_size =recv(s, serverReply, 256, MSG_PEEK)) == SOCKET_ERROR) {
+            puts("Error while receiving a reply from the server.");
         } else {
             serverReply[recv_size] = '\0';
-            puts(serverReply);
+            printf("Data received : %s", serverReply);
         }
     }
+    closesocket(s);
+    WSACleanup();
 
     return 0;
 }
