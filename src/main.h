@@ -14,7 +14,7 @@ static const char CONNECTED[] = "Erfolgreich zum Server verbunden";
 
 //--------------------prototypeFunctions-----------------------//
 void getUserInput();
-int connectToServer(const char *, int);
+int connectToServer(const char *, int, int , char *);
 //--------------------endPrototypeFunctions--------------------//
 
 #endif //VSCLIENT_MAIN_H

@@ -28,6 +28,8 @@ void getUserInput() {
     int numberOfFiles = 0;
     char byteNumberAsChar[3];
     char fileNamesString[250];
+    int port = 0;
+    char ip;
 
     while (exit == 0) {
         //initialize the char array
@@ -41,13 +43,17 @@ void getUserInput() {
 
         numberOfFiles = readFiles(fileNamesString);
 
-        connectToServer(fileNamesString, numberOfFiles);
+        port = readPort();
+
+        ip = readIP();
+
+        connectToServer(fileNamesString, numberOfFiles, port, ip);
 
         exit = 1;
     }
 }
 
-int connectToServer(const char* stringFileNames, int numberOfFiles){
+int connectToServer(const char* stringFileNames, int numberOfFiles, int port, char* ip){
     WSADATA wsa;
     SOCKET s;
     struct sockaddr_in server;
@@ -69,7 +75,7 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
 
     server.sin_family = AF_INET;             /* Familie auf Internet setzen */
     server.sin_port = htons(port);  /* host-byte-order -> network byte-order */
-    server.sin_addr.s_addr = inet_addr("10.9.44.129");     /* Lokale IP-Adressen setzen */
+    server.sin_addr.s_addr = inet_addr(ip);   /* Lokale IP-Adressen setzen */
 
     //connect to remote server
     if(connect(s,(struct sockaddr *)&server , sizeof(server)) < 0){

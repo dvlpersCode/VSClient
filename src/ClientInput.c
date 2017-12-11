@@ -62,7 +62,7 @@ void readFileNames(char *fileString) {
 }
 
 /**
- * initialize an number from the terminal
+ * initialize a number from the terminal
  * @return
  */
 int readNumberFromTerminal() {
@@ -73,5 +73,28 @@ int readNumberFromTerminal() {
     scanf("%s", numberAsChar);
     number = strtol(numberAsChar, &pointer, 10);
     return number;
+}
+
+/**
+ * reads the User Input for the port from the terminal
+ * @return
+ */
+int readPort(){
+    int port;
+
+    printf(READ_PORT);
+    scanf("%d", &port);
+    return port;
+}
+
+/**
+ * reads the from user given ip address
+ * @return
+ */
+char *readIP(){
+    char ipAddress[15];
+    printf(READ_IP);
+    scanf("%a", ipAddress);
+    return ipAddress;
 }
 
