@@ -54,18 +54,18 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     char serverReply[256];
     int recv_size;
 
-    printf("\n Initialising Winsock...");
+    printf(WINSOCK_INITIALISING);
     if(WSAStartup(MAKEWORD(2,2), &wsa) != 0){
         printf("%s %d", CREATE_SOCKET_ERROR, WSAGetLastError());
         return 1;
     }
-    printf("\n Initialised \n");
+    printf(INITIALIZED);
 
     //create Socket
     if((s = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET){
-        printf("Could not create Socket : %d", WSAGetLastError());
+        printf(CREATING_SOCKET_ERROR, WSAGetLastError());
     }
-    printf("Socket created. \n");
+    printf(SOCKET_CREATED);
 
     server.sin_family = AF_INET;             /* Familie auf Internet setzen */
     server.sin_port = htons(port);  /* host-byte-order -> network byte-order */
@@ -79,20 +79,20 @@ int connectToServer(const char* stringFileNames, int numberOfFiles){
     puts(CONNECTED);
 
     //send data
-    if(send(s, stringFileNames, sizeof(*stringFileNames), 0) < 0){
-        puts("Send failed");
+    if(send(s, stringFileNames, 256, 0) < 0){
+        puts(SENDING_DATA_ERROR);
         return 1;
     }
-    puts("Data send\n");
+    puts(DATA_SEND);
 
     //receiving a reply from the server
     for (int i = 0; i < numberOfFiles; i++) {
         initializeCharArray(serverReply);
         if ((recv_size =recv(s, serverReply, 256, MSG_PEEK)) == SOCKET_ERROR) {
-            puts("Error while receiving a reply from the server.");
+            puts(ERROR_RECEIVIING_DATA);
         } else {
             serverReply[recv_size] = '\0';
-            printf("Data received : %s", serverReply);
+            printf(DATA_RECEIVED, serverReply);
         }
     }
     closesocket(s);
