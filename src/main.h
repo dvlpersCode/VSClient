@@ -10,6 +10,14 @@ static const int port = 32000;
 static const char CREATE_SOCKET_ERROR[] = "Fehler beim erstellen des Socket";
 static const char CONNECTION_ERROR[] = "Fehler beim Verbinden zum server";
 static const char CONNECTED[] = "Erfolgreich zum Server verbunden";
+static const char WINSOCK_INITIALISING[] = "\n Initialising Winsock...";
+static const char INITIALIZED[] = "\n Initialised \n";
+static const char CREATING_SOCKET_ERROR[] = "Could not create Socket : %d";
+static const char SOCKET_CREATED[] = "Socket created. \n";
+static const char SENDING_DATA_ERROR[] = "Send failed";
+static const char DATA_SEND[] = "Data send\n";
+static const char ERROR_RECEIVIING_DATA[] = "Error while receiving a reply from the server.";
+static const char DATA_RECEIVED[] = "Data received : %s\n";
 //--------------------endConstants---------------------------------------------//
 
 //--------------------prototypeFunctions-----------------------//
