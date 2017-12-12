@@ -29,11 +29,11 @@ void getUserInput() {
     char byteNumberAsChar[3];
     char fileNamesString[250];
     int port = 0;
-    char ip;
+    char ip[15];
 
     while (exit == 0) {
         //initialize the char array
-        initializeCharArray(fileNamesString);
+        initializeCharArray(fileNamesString, 250);
 
         //read number of bytes that the user wants to receive from the server and copy the result to byteNumbersAsChar
         strcpy(byteNumberAsChar, readNumberOfBytes());
@@ -45,7 +45,7 @@ void getUserInput() {
 
         port = readPort();
 
-        ip = readIP();
+        readIP(ip);
 
         connectToServer(fileNamesString, numberOfFiles, port, ip);
 
@@ -74,7 +74,7 @@ int connectToServer(const char* stringFileNames, int numberOfFiles, int port, ch
     printf(SOCKET_CREATED);
 
     server.sin_family = AF_INET;             /* Familie auf Internet setzen */
-    server.sin_port = htons(port);  /* host-byte-order -> network byte-order */
+    server.sin_port = htons((u_short) port);  /* host-byte-order -> network byte-order */
     server.sin_addr.s_addr = inet_addr(ip);   /* Lokale IP-Adressen setzen */
 
     //connect to remote server
@@ -92,13 +92,16 @@ int connectToServer(const char* stringFileNames, int numberOfFiles, int port, ch
     puts(DATA_SEND);
 
     //receiving a reply from the server
+    memset(&serverReply, '\0', 256);
     for (int i = 0; i < numberOfFiles; i++) {
-        initializeCharArray(serverReply);
-        if ((recv_size =recv(s, serverReply, 256, MSG_PEEK)) == SOCKET_ERROR) {
+        recv_size = recv(s, serverReply, 256, MSG_PEEK);
+        if (recv_size < 0) {
             puts(ERROR_RECEIVIING_DATA);
+            printf("%s %d", ERROR_RECEIVIING_DATA, WSAGetLastError());
         } else {
-            serverReply[recv_size] = '\0';
+            //serverReply[recv_size] = '\0';
             printf(DATA_RECEIVED, serverReply);
+            initializeCharArray(serverReply, 256);
         }
     }
     closesocket(s);

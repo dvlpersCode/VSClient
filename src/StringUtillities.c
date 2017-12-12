@@ -19,6 +19,6 @@ void appendToFileString(char *fileString, char *stringToAppend) {
  * initialize a array with '\0'
  * @param array
  */
-void initializeCharArray(char *array) {
-    memset(&array, '\0', sizeof(array));
+void initializeCharArray(char *array, int length) {
+    memset(&array, '\0', (size_t) length);
 }

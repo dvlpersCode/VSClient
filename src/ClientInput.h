@@ -19,7 +19,7 @@ int readFiles(char *);
 void readFileNames(char *);
 int readNumberFromTerminal();
 int readPort();
-char *readIP();
+void readIP(char *);
 //--------------------endPrototypeFunctions--------------------//
 
 #endif //VSCLIENT_CLIENTINPUT_H

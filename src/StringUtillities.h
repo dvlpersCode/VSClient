@@ -7,7 +7,7 @@
 
 //--------------------prototypeFunctions-----------------------//
 void appendToFileString(char *, char *);
-void initializeCharArray(char *);
+void initializeCharArray(char *, int);
 //--------------------endPrototypeFunctions--------------------//
 
 #endif //VSCLIENT_STRINGUTILLITIES_H

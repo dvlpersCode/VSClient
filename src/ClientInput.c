@@ -91,10 +91,9 @@ int readPort(){
  * reads the from user given ip address
  * @return
  */
-char *readIP(){
-    char ipAddress[15];
+void readIP(char *ip){
     printf(READ_IP);
-    scanf("%a", ipAddress);
-    return ipAddress;
+    scanf("%s", ip);
+    //return ip;
 }
 
