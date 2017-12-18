@@ -57,7 +57,7 @@ int connectToServer(const char* stringFileNames, int numberOfFiles, int port, ch
     WSADATA wsa;
     SOCKET s;
     struct sockaddr_in server;
-    char serverReply[256];
+    char serverReply[RECEIVE_SIZE];
     int recv_size;
 
     printf(WINSOCK_INITIALISING);
@@ -92,17 +92,14 @@ int connectToServer(const char* stringFileNames, int numberOfFiles, int port, ch
     puts(DATA_SEND);
 
     //receiving a reply from the server
-    memset(&serverReply, '\0', 256);
-    for (int i = 0; i < numberOfFiles; i++) {
-        recv_size = recv(s, serverReply, 256, MSG_PEEK);
-        if (recv_size < 0) {
-            puts(ERROR_RECEIVIING_DATA);
-            printf("%s %d", ERROR_RECEIVIING_DATA, WSAGetLastError());
-        } else {
-            //serverReply[recv_size] = '\0';
-            printf(DATA_RECEIVED, serverReply);
-            initializeCharArray(serverReply, 256);
-        }
+    memset(&serverReply, '\0', RECEIVE_SIZE);
+    recv_size = recv(s, serverReply, RECEIVE_SIZE, MSG_PEEK);
+    if (recv_size < 0) {
+        puts(ERROR_RECEIVIING_DATA);
+        printf("%s %d", ERROR_RECEIVIING_DATA, WSAGetLastError());
+    } else {
+        printf(DATA_RECEIVED, serverReply);
+        initializeCharArray(serverReply, RECEIVE_SIZE);
     }
     closesocket(s);
     WSACleanup();
